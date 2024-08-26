@@ -13,6 +13,7 @@ AI Repo Packer is a bash script that condenses a code repository or directory in
 - [File Exclusion](#file-exclusion)
 - [Limitations and Considerations](#limitations-and-considerations)
 - [Customization](#customization)
+- [Prompt Examples](#prompt-examples)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
@@ -127,6 +128,141 @@ While the script provides command-line options for basic customization, you can 
 - Modify the output format or included information
 
 Note that direct script customization requires editing the bash script and may require bash scripting knowledge.
+
+## Prompt Examples
+
+After using AI Repo Packer to condense your codebase into a single, AI-friendly file, you're ready to harness the power of advanced AI tools for comprehensive code analysis and improvement. This section provides a curated set of prompts designed to maximize the utility of your packed repository when working with AI assistants such as Claude, ChatGPT, and Gemini.
+
+These prompts are crafted to address various aspects of software development, from high-level architecture review to detailed code quality assessment. By using these prompts as starting points, you can effectively communicate your needs to AI models and extract valuable insights about your codebase.
+
+### How to Use These Prompts
+
+1. Begin by uploading your AI Repo Packer output file to your chosen AI tool.
+2. Copy the desired prompt from the examples below.
+3. Paste the prompt into your conversation with the AI, adjusting it as needed for your specific requirements.
+4. Engage with the AI's responses, asking follow-up questions to delve deeper into particular areas of interest.
+
+Remember, these prompts are starting points. Feel free to modify them or combine elements from different prompts to best suit your project's unique needs. The more specific and detailed your prompts, the more tailored and actionable the AI's responses will be.
+
+Let's explore some example prompts to kickstart your AI-assisted code analysis:
+
+#### Code Review and Refactoring:
+
+```
+This file contains my entire codebase. Please perform a comprehensive code review focusing on the following aspects:
+
+1. Overall architecture and design patterns
+2. Code organization and modularity
+3. Naming conventions and code readability
+4. Error handling and edge cases
+5. Performance considerations
+
+For each aspect, provide:
+
+a) Specific examples of good practices already in use
+b) Areas that need improvement, with code snippets where applicable
+c) Refactoring suggestions to enhance maintainability and scalability
+d) Any potential security vulnerabilities
+
+Conclude with a summary of the top 3-5 most impactful refactoring recommendations.
+```
+
+#### Documentation Generation:
+
+```
+Based on the codebase in this file, please generate a detailed README.md that includes:
+
+1. Project title and a brief, compelling description
+2. Badges (if applicable) for build status, test coverage, etc.
+3. Key features with brief explanations
+4. Technologies/frameworks used
+5. Detailed installation and setup instructions, including prerequisites
+6. Usage examples with code snippets
+7. API Reference (if applicable)
+8. Configuration options
+9. Contributing guidelines
+10. License information
+11. Acknowledgments (if any)
+
+Please format the README using proper Markdown syntax, including headings, code blocks, and lists where appropriate.
+```
+
+#### Test Case Generation:
+
+```
+Analyze the code in this file and generate a comprehensive set of unit tests. For each main function or class:
+
+1. Identify the critical paths and functionalities to be tested
+2. Provide a list of test cases, including:
+   a) Normal operation scenarios
+   b) Edge cases (e.g., empty inputs, maximum values)
+   c) Error scenarios and exception handling
+3. For each test case, specify:
+   a) Input values
+   b) Expected output or behavior
+   c) The assertion to be made
+4. Suggest any mock objects or stubs that might be needed
+5. Identify any parts of the code that might be challenging to test and suggest potential solutions
+
+Please provide the test cases in a format that could be easily translated into actual unit tests in the appropriate testing framework.
+```
+
+
+#### Code Quality Assessment:
+
+```
+Review the codebase for adherence to coding best practices and industry standards. Please provide a detailed analysis covering:
+
+1. Code style and consistency
+   a) Adherence to language-specific style guides
+   b) Consistent naming conventions
+   c) Proper indentation and formatting
+2. Code complexity
+   a) Identify overly complex methods or classes
+   b) Suggest ways to reduce complexity (e.g., breaking down large functions)
+3. DRY (Don't Repeat Yourself) principle adherence
+   a) Identify repeated code patterns
+   b) Suggest abstractions or refactoring to reduce repetition
+4. SOLID principles application
+   a) Evaluate how well the code follows SOLID principles
+   b) Suggest improvements for better adherence
+5. Error handling and logging
+   a) Assess the effectiveness of current error handling
+   b) Suggest improvements in error reporting and logging
+6. Performance considerations
+   a) Identify potential performance bottlenecks
+   b) Suggest optimizations
+7. Security best practices
+   a) Identify any security vulnerabilities
+   b) Suggest security improvements
+
+For each point, provide specific code examples and suggested improvements. Conclude with a prioritized list of the top 5 areas for improvement.
+```
+
+#### Library Overview:
+
+```
+This file contains the entire codebase of the library. Please provide a comprehensive overview including:
+
+1. Main purpose and problem the library solves
+2. Key features and capabilities
+3. Overall architecture
+   a) Major components/modules and their responsibilities
+   b) How these components interact
+4. Core abstractions and design patterns used
+5. Public API overview
+   a) Main classes/functions that users of the library would interact with
+   b) Brief description of what each does
+6. Any notable algorithms or data structures used
+7. Dependencies and integration points with other systems/libraries
+8. Scalability and performance characteristics
+9. Potential use cases or example scenarios where this library would be particularly useful
+10. Any unique or innovative approaches used in the implementation
+
+Please provide code snippets or class/function names as examples where relevant. Conclude with a brief comparison to similar libraries in the ecosystem, highlighting this library's unique strengths.
+```
+
+
 
 ## Contributing
 

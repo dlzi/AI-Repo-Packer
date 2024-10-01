@@ -1,0 +1,152 @@
+#!/bin/bash
+
+# AI Repository Packer
+# This script packs an entire repository or directory into a single, AI-friendly file.
+
+set -e
+
+# Default excluded files
+DEFAULT_EXCLUDES=("README.md" "LICENSE" ".editorconfig" "*.md" "ai_friendly_repo_pack.txt")
+
+# Function to display usage information
+usage() {
+    echo "Usage: $0 [-e <excluded_file>]... <path_to_repository_or_directory>"
+    echo "  -e <excluded_file>: File or pattern to exclude (can be used multiple times)"
+    echo "  <path_to_repository_or_directory>: The path to the repository or directory you want to pack"
+    echo "  -h: Display this help message"
+    exit 1
+}
+
+# Function to count tokens (simple word-based approximation)
+count_tokens() {
+    echo $(wc -w <<< "$1")
+}
+
+# Function to format file content with separators
+format_file_content() {
+    local file=$1
+    local content=$(cat "$file")
+    local tokens=$(count_tokens "$content")
+    echo "================"
+    echo "File: $file"
+    echo "Tokens: $tokens"
+    echo "================"
+    echo "$content"
+    echo
+}
+
+# Function to check if a file is ignored by git
+is_ignored_by_git() {
+    local file=$1
+    local repo_root=$2
+    
+    if [ -d "$repo_root/.git" ] && command -v git >/dev/null 2>&1; then
+        if ! git -C "$repo_root" check-ignore "$file" >/dev/null 2>&1; then
+            return 1  # Not ignored
+        fi
+    else
+        return 1  # Not a git repo or git not available, so not ignored
+    fi
+    return 0  # Ignored
+}
+
+# Function to check if a file should be excluded
+should_exclude() {
+    local file=$1
+    local base_name=$(basename "$file")
+    
+    for pattern in "${EXCLUDE_PATTERNS[@]}"; do
+        if [[ $base_name == $pattern ]]; then
+            return 0  # Should exclude
+        fi
+    done
+    return 1  # Should not exclude
+}
+
+# Main script
+main() {
+    EXCLUDE_PATTERNS=("${DEFAULT_EXCLUDES[@]}")
+
+    # Parse command line options
+    while getopts "e:h" opt; do
+        case $opt in
+            e)
+                EXCLUDE_PATTERNS+=("$OPTARG")
+                ;;
+            h)
+                usage
+                ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2
+                usage
+                ;;
+        esac
+    done
+
+    # Remove parsed options
+    shift $((OPTIND-1))
+
+    # Check if a path argument is provided
+    if [ $# -eq 0 ]; then
+        usage
+    fi
+
+    local repo_path="$1"
+    
+    # Check if the provided path exists and is a directory
+    if [ ! -d "$repo_path" ]; then
+        echo "Error: '$repo_path' is not a valid directory."
+        usage
+    fi
+
+    local output_file="ai_friendly_repo_pack.txt"
+    local total_tokens=0
+
+    # Create or overwrite the output file
+    > "$output_file"
+
+    # Write the header
+    cat << EOF >> "$output_file"
+================================================================
+REPOPACK OUTPUT FILE
+================================================================
+This file is generated to assist AI models in understanding and
+processing the codebase efficiently. The repository structure is
+outlined first, followed by the content of each file. Pay 
+attention to the file paths and contents to maintain context.
+The total token count for the repository is provided at the end.
+
+================================================================
+Repository Structure
+================================================================
+EOF
+
+    # Convert DEFAULT_EXCLUDES array into a single pipe-separated string
+    EXCLUDES=$(IFS='|'; echo ".git|${DEFAULT_EXCLUDES[*]}")
+
+    # Add repository structure with exclusions
+    (cd "$repo_path" && tree -L 3 --charset=ascii -P "*" --dirsfirst -I "$EXCLUDES" 2>/dev/null || find . -type d | sort | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/") >> "$output_file"
+
+    echo "================================================================" >> "$output_file"
+    echo "Repository Files" >> "$output_file"
+    echo "================================================================" >> "$output_file"
+
+    # Process each file
+    while IFS= read -r -d '' file; do
+        if [[ -f "$file" ]] && ! is_ignored_by_git "$file" "$repo_path" && ! should_exclude "$file"; then
+            content=$(format_file_content "$file")
+            echo "$content" >> "$output_file"
+            file_tokens=$(count_tokens "$content")
+            total_tokens=$((total_tokens + file_tokens))
+        fi
+    done < <(find "$repo_path" -type f -not -path '*/\.git/*' -print0)
+
+    # Add total token count
+    echo "================================================================" >> "$output_file"
+    echo "Total Tokens: $total_tokens" >> "$output_file"
+
+    echo "Repository packed into $output_file"
+    echo "Total tokens: $total_tokens"
+}
+
+main "$@"
